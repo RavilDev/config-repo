@@ -1,0 +1,58 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: api-gateway-client
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+            scope: openid,profile,email
+        provider:
+          keycloak:
+            issuer-uri: http://keycloak:8080/realms/pet-project
+            user-name-attribute: preferred_username
+
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - TokenRelay=
+
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: "*"
+                allowedMethods: [GET, POST, PUT, DELETE, OPTIONS]
+                allowedHeaders: "*"
+
+    loadbalancer:
+      ribbon:
+        enabled: false
+
+  eureka:
+    client:
+      serviceUrl:
+        defaultZone: http://service-discovery:8761/eureka/
+      registerWithEureka: true
+      fetchRegistry: true
+    instance:
+      instanceId: api-gateway:${server.port}
+
+logging:
+  level:
+    io.github.resilience4j: DEBUG
+    org.springframework.security: DEBUG
