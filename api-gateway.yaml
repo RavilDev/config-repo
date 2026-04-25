@@ -28,7 +28,7 @@ spring:
           predicates:
             - Path=/api/users/**
           filters:
-            - TokenRelay=
+            - TokenRelay
             - name: CircuitBreaker
               args:
                 name: userServiceCircuitBreaker
@@ -39,7 +39,7 @@ spring:
           predicates:
             - Path=/api/notifications/**
           filters:
-            - TokenRelay=
+            - TokenRelay
             - name: CircuitBreaker
               args:
                 name: notificationServiceCircuitBreaker
