@@ -20,11 +20,17 @@ spring:
             issuer-uri: http://keycloak:8080/realms/pet-project
             user-name-attribute: preferred_username
 
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.oauth2.client.reactive.ReactiveOAuth2ClientAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.reactive.ReactiveOAuth2ResourceServerAutoConfiguration
+
   cloud:
     gateway:
       routes:
         - id: user-service
-          uri: lb://user-service
+          uri: lb://SERVICE-USER
           predicates:
             - Path=/api/users/**
           filters:
@@ -35,7 +41,7 @@ spring:
                 fallbackUri: forward:/fallback/user
 
         - id: notification-service
-          uri: lb://notification-service
+          uri: lb://SERVICE-NOTIFICATION
           predicates:
             - Path=/api/notifications/**
           filters:
@@ -66,6 +72,15 @@ spring:
       fetchRegistry: true
     instance:
       instanceId: api-gateway:${server.port}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
 
 logging:
   level:
