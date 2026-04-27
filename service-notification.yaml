@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: service-notification
+
+  server:
+    port: 8082
+
+  kafka:
+    consumer:
+      bootstrap-servers: kafka:9092
+      group-id: notification-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    listener:
+      concurrency: 1
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  config:
+    import: optional:file:../common-kafka.properties
+
+kafka:
+  topic:
+    user-events: users
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-discovery:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: false
+    instance-id: service-notification:${server.port}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+          - metrics
+          - gateway
+
+  endpoint:
+    health:
+      show-details: always

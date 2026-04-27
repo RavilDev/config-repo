@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: service-user
+
+  server:
+    port: 8081
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/user_service
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+
+  kafka:
+    producer:
+      bootstrap-servers: kafka:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  config:
+    import: optional:file:../common-kafka.properties
+
+  doc:
+    api-docs:
+      enabled: true
+      path: /v3/api-docs
+    swagger-ui:
+      enabled: true
+      path: /index.html
+      url: /v3/api-docs
+
+kafka:
+  topic:
+    user-events: users
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-discovery:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: false
+    instance-id: service-user:${server.port}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+          - metrics
+          - gateway
+
+  endpoint:
+    health:
+      show-details: always
