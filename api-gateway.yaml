@@ -25,6 +25,7 @@ spring:
       - org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
       - org.springframework.boot.autoconfigure.security.oauth2.client.reactive.ReactiveOAuth2ClientAutoConfiguration
       - org.springframework.boot.autoconfigure.security.oauth2.resource.reactive.ReactiveOAuth2ResourceServerAutoConfiguration
+      - org.springframework.boot.actuate.autoconfigure.security.reactive.ReactiveManagementWebSecurityAutoConfiguration
 
   cloud:
     gateway:
@@ -77,7 +78,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include:
+          - health
+          - prometheus
+          - metrics
+          - gateway
+
   endpoint:
     health:
       show-details: always
