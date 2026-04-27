@@ -6,8 +6,8 @@ spring:
     port: 8082
 
   kafka:
+    bootstrap-servers: kafka:9092
     consumer:
-      bootstrap-servers: kafka:9092
       group-id: notification-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
